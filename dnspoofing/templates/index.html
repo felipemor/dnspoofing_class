@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>DNSpy - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>📊 DNS Spoofing Logs</h2>
+        <a class="btn btn-danger mb-3" href="/export/pdf">Export PDF</a>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Domain</th>
+                    <th>Responded IP</th>
+                    <th>Real IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in logs %}
+                <tr>
+                    <td>{{ row.Data }}</td>
+                    <td>{{ row.Dominio }}</td>
+                    <td>{{ row.IP_Respondido }}</td>
+                    <td>{{ row.IP_Real }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 class="mt-5">📈 Most Spoofed Domains</h3>
+        <canvas id="spoofChart" height="100"></canvas>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('spoofChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ chart_labels | tojson | safe }},
+                datasets: [{
+                    label: 'Number of Spoofs per Domain',
+                    data: {{ chart_data | tojson | safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Occurrences'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Domains'
+                        }
+                    }
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>
