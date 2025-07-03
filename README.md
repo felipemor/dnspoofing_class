@@ -29,3 +29,8 @@ pip install requests
 
 Then execute the script:
 python dos.py
+
+
+⚠️ Disclaimer: This project was developed strictly for educational and research purposes only.
+I do not take any responsibility for any misuse, illegal activity, or damage caused by this code.
+Use it at your own risk, and always within legal and ethical boundaries.
